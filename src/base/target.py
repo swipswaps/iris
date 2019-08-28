@@ -151,6 +151,9 @@ class BaseTarget:
         if call.when == "call" and call.excinfo is not None:
             self.clean_run = False
 
+            stack_trace_messages = [str(entry).replace('\\\\', '\\') for entry in call.excinfo.traceback
+                                        if '.virtualenv' not in str(entry)]
+
             # Examine the last line of the call stack.
             tb = call.excinfo.traceback.pop()
 
@@ -177,8 +180,9 @@ class BaseTarget:
             exception_error_class = call.excinfo.exconly(True).split(':')[0]
             message_only = str(call.excinfo.value).split('\n')[0]
             exc_str = '%s:%s: %s: %s' % (file_name, line_number, exception_error_class, message_only)
-            assert_object = (item, outcome, exc_str, call.excinfo.traceback)
+            assert_object = (item, outcome, exc_str, stack_trace_messages)
             test_result = create_result_object(assert_object, call.start, call.stop)
+
             self.completed_tests.append(test_result)
 
         elif call.when == 'call' and call.excinfo is None:

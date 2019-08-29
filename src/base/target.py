@@ -152,7 +152,7 @@ class BaseTarget:
             self.clean_run = False
 
             stack_trace_messages = [str(entry).replace('\\\\', '\\') for entry in call.excinfo.traceback
-                                        if '.virtualenv' not in str(entry)]
+                                        if 'pytest' not in str(entry) and 'pluggy' not in str(entry)]
 
             # Examine the last line of the call stack.
             tb = call.excinfo.traceback.pop()

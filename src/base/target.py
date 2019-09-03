@@ -151,15 +151,10 @@ class BaseTarget:
         if call.when == "call" and call.excinfo is not None:
             self.clean_run = False
 
-            stack_trace_messages = [str(entry).replace('\\\\', '\\') for entry in call.excinfo.traceback
-                                    if 'pytest' not in str(entry) and 'pluggy' not in str(entry)]
-            stack_trace_messages_console_report = 'Stack trace:\n' + '\n'.join(stack_trace_messages)
-
-            # Examine the last line of the call stack.
-            tb = call.excinfo.traceback.pop()
-
-            # Convert extra backslashes that appear on Windows
-            tb_str = str(tb).replace('\\\\', '\\')
+            stack_trace_messages = [str(entry).replace('\\\\', '\\') for entry in call.excinfo.traceback]
+            # Examine the last line of the call stack
+            tb_str = stack_trace_messages[-1]
+            stack_trace_messages_console_report = 'Stack trace top message:\n' + tb_str + '\n'
 
             if str(item.__dict__.get('fspath')) in tb_str:
                 if 'AssertionError' in str(call.excinfo):

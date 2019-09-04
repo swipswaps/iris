@@ -154,7 +154,8 @@ class BaseTarget:
             stack_trace_messages = [str(entry).replace('\\\\', '\\') for entry in call.excinfo.traceback]
             # Examine the last line of the call stack
             tb_str = stack_trace_messages[-1]
-            stack_trace_messages_console_report = 'Stack trace top message:\n' + tb_str + '\n'
+            stack_trace_messages_console_report = 'Stack trace messages (last 5):\n' + \
+                                                  '\n'.join(stack_trace_messages[-5:])
 
             if str(item.__dict__.get('fspath')) in tb_str:
                 if 'AssertionError' in str(call.excinfo):
@@ -181,7 +182,7 @@ class BaseTarget:
             self.completed_tests.append(test_result)
 
             if outcome == "FAILED":
-                logger.warning('Test failed\n' + stack_trace_messages_console_report)
+                logger.error('Test failed\n' + stack_trace_messages_console_report)
             elif outcome == "ERROR":
                 logger.error('Error occurred during test run\n' + stack_trace_messages_console_report)
 
